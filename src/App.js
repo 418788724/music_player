@@ -1,13 +1,25 @@
 import React, {
   Component
-} from 'react';
-import Header from './components/header'
-import Player from './route/player'
+} from 'react'
 import $ from 'jquery'
 import 'jplayer'
 
+import Header from './components/header'
+import Player from './route/player'
+
+import {
+  MUSIC_LIST
+} from './const/musicList.js'
+
 
 class App extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      currentMusicItem: MUSIC_LIST[0]
+    }
+  }
 
   //Dom挂载完成后插入播放器
   componentDidMount() {
@@ -28,7 +40,7 @@ class App extends Component {
     return (
       <div className="App">
         <Header />
-        <Player />
+        <Player currentMusicItem={this.state.currentMusicItem}/>
       </div>
     );
   }
