@@ -18,7 +18,9 @@ class Player extends Component {
 		super(props);
 
 		this.state = {
-			progress: 0
+			progress: 0,
+			volume: 0,
+			isPlay: false
 		}
 	}
 
@@ -26,8 +28,10 @@ class Player extends Component {
 	componentDidMount() {
 		$("#player").bind($.jPlayer.event.timeupdate, (e) => {
 			duration = e.jPlayer.status.duration //歌曲总时间
+
 			this.setState({
-				progress: e.jPlayer.status.currentPercentAbsolute
+				progress: e.jPlayer.status.currentPercentAbsolute,
+				volume: e.jPlayer.options.volume * 100
 			});
 		});
 	}
@@ -43,6 +47,25 @@ class Player extends Component {
 		$('#player').jPlayer('play', duration * p)
 	}
 
+	//鼠标点击切换音量大小
+	volumeChangeHandler(p) {
+		$('#player').jPlayer('volume', p)
+	}
+
+	//控制歌曲的暂停和播放
+	play() {
+		if (this.state.isPlay) {
+			$('#player').jPlayer('pause')
+		} else {
+			$('#player').jPlayer('play')
+		}
+
+		//更新state值
+		this.setState({
+			isPlay: !this.state.isPlay
+		})
+	}
+
 	render() {
 		return (
 			<div className="player-page">
@@ -56,17 +79,25 @@ class Player extends Component {
                 			<div className="volume-container">
                 				<i className="icon-volume rt" style={{top: 5, left: -5}}></i>
                 				<div className="volume-wrapper">
-					                音量
+					                <Progress 
+					                	progress={this.state.volume}
+					                	onProgressChange={this.volumeChangeHandler}
+					                	bgColor='gray'
+					                />
                 				</div>
                 			</div>
                 		</div>
                 		<div style={{height: 10, lineHeight: '10px'}}>
-			               播放进度
+			               <Progress 
+			               		progress={this.state.progress}
+			               		onProgressChange={this.progressChangeHandler}
+			               		bgColor='green'
+			               />
                 		</div>
                 		<div className="mt35 row">
                 			<div>
 	                			<i className="icon prev" onClick={this.prev}></i>
-	                			<i className={`icon ml20 ${this.state.isPlay ? 'pause' : 'play'}`} onClick={this.play}></i>
+	                			<i className={`icon ml20 ${this.state.isPlay ? 'pause' : 'play'}`} onClick={this.play.bind(this)}></i>
 	                			<i className="icon next ml20" onClick={this.next}></i>
                 			</div>
                 			<div className="-col-auto">
