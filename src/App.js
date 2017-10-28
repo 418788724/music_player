@@ -3,8 +3,6 @@ import React, {
 } from 'react'
 import $ from 'jquery'
 import 'jplayer'
-import { BrowserRouter as Router,Route,Switch} from 'react-router-dom'
-
 
 import Header from './components/header'
 import Player from './route/player'
