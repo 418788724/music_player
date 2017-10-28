@@ -4,6 +4,7 @@ import MusicListItem from '../components/musicListItem'
 class AllMusicList extends Component {
 	render () {
 		let elemusic = null
+		console.log(111,this)
 		let musicList = this.props.musicList
 		let currentMusicItem = this.props.currentMusicItem
 		
