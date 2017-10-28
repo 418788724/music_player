@@ -3,6 +3,8 @@ import React, {
 } from 'react'
 import $ from 'jquery'
 import 'jplayer'
+import { BrowserRouter as Router,Route,Switch} from 'react-router-dom'
+
 
 import Header from './components/header'
 import Player from './route/player'
@@ -19,7 +21,7 @@ class App extends Component {
 
     this.state = {
       currentMusicItem: MUSIC_LIST[0],
-      allMusicList: MUSIC_LIST
+      musicList: MUSIC_LIST
     }
   }
 
@@ -42,11 +44,10 @@ class App extends Component {
     return (
       <div className="App">
         <Header />
-        <Player currentMusicItem={this.state.currentMusicItem}/>
-        <AllMusicList 
-          musicList={this.state.allMusicList}
-          currentMusicItem={this.state.currentMusicItem}
-        />
+       {window.location.pathname==='/list'?
+       <AllMusicList musicList={this.state.musicList} currentMusicItem={this.state.currentMusicItem}/>:
+       <Player currentMusicItem={this.state.currentMusicItem}/>}
+        
       </div>
     );
   }
