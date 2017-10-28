@@ -43,11 +43,12 @@ class App extends Component {
     return (
       <div className="App">
         <Header />
-        <Player currentMusicItem={this.state.currentMusicItem}/>
+{/*        <Player currentMusicItem={this.state.currentMusicItem}/>
         <AllMusicList 
           musicList={this.state.allMusicList}
           currentMusicItem={this.state.currentMusicItem}
-        />
+        />*/}
+        {React.cloneElement(this.props.children, {musicList: this.state.allMusicList, currentMusicItem: this.state.currentMusicItem})}
       </div>
     );
   }

@@ -6,8 +6,7 @@ class Root extends Component {
   render () {
     return (
         <Router>
-          <Route>
-            <Route path='/' component={App}></Route>
+          <Route path='/' component={App}>
             <Route path='/list' component={AllMusicList}></Route>
           </Route>
           
