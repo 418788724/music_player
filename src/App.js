@@ -4,7 +4,10 @@ import React, {
 import $ from 'jquery'
 import 'jplayer'
 import Pubsub from 'pubsub-js'
-
+import {
+  BrowserRouter as Router,
+  Route
+} from 'react-router-dom'
 import Header from './components/header'
 import Player from './route/player'
 import AllMusicList from './route/allMusicList'
@@ -61,6 +64,7 @@ class App extends Component {
 
   }
 
+  //事件解绑？？？
   componentWillUnmount() {
     Pubsub.unsubscribe('DELETE_MUSIC')
     Pubsub.unsubscribe('PLAY_MUSIC')
@@ -68,13 +72,28 @@ class App extends Component {
 
   render() {
     return (
-      <div className="App">
-        <Header />
-       {window.location.pathname==='/list'?
-       <AllMusicList musicList={this.state.musicList} currentMusicItem={this.state.currentMusicItem}/>:
-       <Player currentMusicItem={this.state.currentMusicItem}/>}
-        
-      </div>
+      <Router>
+        <div className="App">
+          <Header />
+            <Router>
+            <div className="App">
+                <Route exact
+                  path="/" 
+                  render={()=><Player
+                    currentMusicItem={this.state.currentMusicItem}
+                  />}
+                ></Route>
+                <Route exact
+                  path="/list" 
+                  render={()=><AllMusicList
+                    currentMusicItem={this.state.currentMusicItem}
+                    musicList={this.state.musicList}
+                  />}
+                ></Route>              
+             </div>
+            </Router>          
+        </div>
+      </Router>
     );
   }
 }
