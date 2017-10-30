@@ -6,6 +6,7 @@ import 'jplayer'
 
 import Header from './components/header'
 import Player from './route/player'
+import AllMusicList from './route/allMusicList'
 
 import {
   MUSIC_LIST
@@ -13,11 +14,12 @@ import {
 
 
 class App extends Component {
-  constructor(props) {
-    super(props);
+  constructor() {
+    super();
 
     this.state = {
-      currentMusicItem: MUSIC_LIST[0]
+      currentMusicItem: MUSIC_LIST[0],
+      allMusicList: MUSIC_LIST
     }
   }
 
@@ -41,6 +43,10 @@ class App extends Component {
       <div className="App">
         <Header />
         <Player currentMusicItem={this.state.currentMusicItem}/>
+        <AllMusicList 
+          musicList={this.state.allMusicList}
+          currentMusicItem={this.state.currentMusicItem}
+        />
       </div>
     );
   }

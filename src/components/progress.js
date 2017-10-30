@@ -1,7 +1,7 @@
-import React from 'react'
+import React, { Component } from 'react'
 import './progress.css'
 
-class Progress extends React.Component {
+class Progress extends Component {
 	changeProgress(e) {
 		let progressBar = this.refs.progressBar
 		let newProgress = (e.clientX - progressBar.getBoundingClientRect().left) / progressBar.clientWidth;
