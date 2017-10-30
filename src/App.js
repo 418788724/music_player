@@ -3,6 +3,7 @@ import React, {
 } from 'react'
 import $ from 'jquery'
 import 'jplayer'
+import Pubsub from 'pubsub-js'
 
 import Header from './components/header'
 import Player from './route/player'
@@ -23,19 +24,46 @@ class App extends Component {
     }
   }
 
+  //播放音乐
+  PlayMusic(item) {
+    $("#player").jPlayer('setMedia', {
+      mp3: item.file
+    }).jPlayer('play')
+
+    //// //更新数据
+    this.setState({
+      currentMusicItem: item
+    })
+  }
+
   //Dom挂载完成后插入播放器
   componentDidMount() {
     $("#player").jPlayer({
-      ready: function() {
-        $(this).jPlayer("setMedia", {
-          mp3: "http://oj4t8z2d5.bkt.clouddn.com/%E9%AD%94%E9%AC%BC%E4%B8%AD%E7%9A%84%E5%A4%A9%E4%BD%BF.mp3"
-        }).jPlayer('play');
-      },
       supplied: "mp3",
       wmode: "window",
       useStateClassSkin: true
     });
 
+    this.PlayMusic(this.state.currentMusicItem)
+
+    //事件订阅
+    Pubsub.subscribe('DELETE_MUSIC', (msg, item) => {
+      this.setState({
+        musicList: this.state.musicList.filter((value) => {
+          return value !== item
+        })
+      })
+    })
+
+    Pubsub.subscribe('PLAY_MUSIC', (msg, item) => {
+      this.PlayMusic(item)
+    })
+
+  }
+
+  componentWillUnmount() {
+    Pubsub.unsubscribe('DELETE_MUSIC')
+    Pubsub.unsubscribe('PLAY_MUSIC')
   }
 
   render() {
