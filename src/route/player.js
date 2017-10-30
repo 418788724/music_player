@@ -6,6 +6,7 @@ import {
 } from 'react-router-dom'
 import $ from 'jquery'
 import 'jplayer'
+import Pubsub from 'pubsub-js'
 
 import './player.css'
 
@@ -54,6 +55,7 @@ class Player extends Component {
 
 	//控制歌曲的暂停和播放
 	play() {
+		console.log('play', this)
 		if (this.state.isPlay) {
 			$('#player').jPlayer('pause')
 		} else {
@@ -64,6 +66,15 @@ class Player extends Component {
 		this.setState({
 			isPlay: !this.state.isPlay
 		})
+	}
+
+	prev() {
+		console.log('arrow', this)
+		Pubsub.publish('PREV_MUSIC')
+	}
+
+	next() {
+		Pubsub.publish('NEXT_MUSIC')
 	}
 
 	render() {
@@ -96,12 +107,12 @@ class Player extends Component {
                 		</div>
                 		<div className="mt35 row">
                 			<div>
-	                			<i className="icon prev" onClick={this.prev}></i>
-	                			<i className={`icon ml20 ${this.state.isPlay ? 'pause' : 'play'}`} onClick={this.play.bind(this)}></i>
-	                			<i className="icon next ml20" onClick={this.next}></i>
+	                			<i className="icon prev" onClick={this.prev.bind(this)}></i>
+								<i className={`icon ml20 ${this.state.isPlay ? 'pause' : 'play'}`} onClick={this.play.bind(this)}></i>
+	                			<i className="icon next ml20" onClick={this.next.bind(this)}></i>
                 			</div>
                 			<div className="-col-auto">
-                				<i className={`icon repeat-${this.props.repeatType}`} onClick={this.changeRepeat}></i>
+                				<i className='icon repeat-once' onClick={this.changeRepeat}></i>
                 			</div>
                 		</div>
                 	</div>

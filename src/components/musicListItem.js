@@ -7,10 +7,13 @@ import Pubsub from 'pubsub-js'
 class MusicListItem extends Component {
 
 	playMusic(item) {
+		console.log(this)
 		Pubsub.publish('PLAY_MUSIC', item)
 	}
 
-	deleteMusic(item) {
+	deleteMusic(item, e) {
+		console.log(this)
+		e.stopPropagation()
 		Pubsub.publish('DELETE_MUSIC', item)
 	}
 

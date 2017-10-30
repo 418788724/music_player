@@ -22,7 +22,7 @@ class App extends Component {
     super();
 
     this.state = {
-      currentMusicItem: MUSIC_LIST[0],
+      currentMusicItem: MUSIC_LIST[4],
       musicList: MUSIC_LIST
     }
   }
@@ -39,6 +39,23 @@ class App extends Component {
     })
   }
 
+  NextMusic(type = 'next') {
+    let index = this.state.musicList.indexOf(this.state.currentMusicItem)
+    let newIndex = null
+    if (type === 'next') {
+      newIndex = (index + 1) % this.state.musicList.length
+    } else {
+      newIndex = (index + this.state.musicList.length - 1) % this.state.musicList.length
+        //console.log(newIndex)
+    }
+
+    this.PlayMusic(this.state.musicList[newIndex])
+
+    this.setState({
+      currentMusicItem: this.state.musicList[newIndex]
+    })
+  }
+
   //Dom挂载完成后插入播放器
   componentDidMount() {
     $("#player").jPlayer({
@@ -47,10 +64,18 @@ class App extends Component {
       useStateClassSkin: true
     });
 
+    //初始化播放
     this.PlayMusic(this.state.currentMusicItem)
 
-    //事件订阅
+    //自动播放下一首
+    $('#player').bind($.jPlayer.event.ended, (e) => {
+      this.NextMusic()
+    })
+
+    //删除歌曲
     Pubsub.subscribe('DELETE_MUSIC', (msg, item) => {
+      this.NextMusic('next')
+
       this.setState({
         musicList: this.state.musicList.filter((value) => {
           return value !== item
@@ -58,8 +83,18 @@ class App extends Component {
       })
     })
 
+    //播放选中音乐
     Pubsub.subscribe('PLAY_MUSIC', (msg, item) => {
       this.PlayMusic(item)
+    })
+
+    //
+    Pubsub.subscribe('PREV_MUSIC', (msg) => {
+      this.NextMusic('prev')
+    })
+
+    Pubsub.subscribe('NEXT_MUSIC', (msg) => {
+      this.NextMusic()
     })
 
   }
@@ -68,6 +103,9 @@ class App extends Component {
   componentWillUnmount() {
     Pubsub.unsubscribe('DELETE_MUSIC')
     Pubsub.unsubscribe('PLAY_MUSIC')
+    Pubsub.unsubscribe('PREV_MUSIC')
+    Pubsub.unsubscribe('NEXT_MUSIC')
+    $('#player').unbind($.jPlayer.event.ended);
   }
 
   render() {
