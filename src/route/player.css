@@ -36,17 +36,24 @@
 	top: -3px;
 }
 
-.volume-container .volume-wrapper {
-	opacity: 1;
+.volume-wrapper {
+	opacity: 0;
 	transition: opacity .5s linear;
 }
 .volume-container:hover .volume-wrapper {
 	opacity: 1;
 }
 
-.volume-container .volume-wrapper {
+.volume-wrapper {
 	width: 60px;
 	display: inline-block;
+}
+
+.volume-wrapper {
+    width: 120px;
+    margin: 0 auto;
+    margin-left: 5px;
+    display: inline-block;
 }
 
 .icon {

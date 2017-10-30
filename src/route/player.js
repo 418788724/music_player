@@ -21,18 +21,29 @@ class Player extends Component {
 		this.state = {
 			progress: 0,
 			volume: 0,
-			isPlay: true
+			isPlay: true,
+			leftTime: '0:00'
 		}
 	}
+
+	formatTime(time) {
+		let minutes = Math.floor(time / 60)
+		let seconds = Math.floor(time % 60)
+		seconds = seconds < 10 ? `0${seconds}` : seconds
+		return `${minutes}: ${seconds}`
+	}
+
 
 	//播放进度时间
 	componentDidMount() {
 		$("#player").bind($.jPlayer.event.timeupdate, (e) => {
 			duration = e.jPlayer.status.duration //歌曲总时间
+			console.log(duration)
 
 			this.setState({
 				progress: e.jPlayer.status.currentPercentAbsolute,
-				volume: e.jPlayer.options.volume * 100
+				volume: e.jPlayer.options.volume * 100,
+				leftTime: this.formatTime(duration * (1 - e.jPlayer.status.currentPercentAbsolute / 100))
 			});
 		});
 	}
@@ -86,10 +97,10 @@ class Player extends Component {
                 		<h2 className="music-title">{this.props.currentMusicItem.title}</h2>
                 		<h3 className="music-artist mt10">{this.props.currentMusicItem.artist}</h3>
                 		<div className="row mt20">
-                			<div className="left-time -col-auto">时间</div>
+                			<div className="left-time -col-auto">-{this.state.leftTime}</div>
                 			<div className="volume-container">
                 				<i className="icon-volume rt" style={{top: 5, left: -5}}></i>
-                				<div className="volume-wrapper">
+								<div className="volume-wrapper" style={{position:'relative',top:3}}>
 					                <Progress 
 					                	progress={this.state.volume}
 					                	onProgressChange={this.volumeChangeHandler}
@@ -98,7 +109,7 @@ class Player extends Component {
                 				</div>
                 			</div>
                 		</div>
-                		<div style={{height: 10, lineHeight: '10px'}}>
+						<div style={{height: '10px', lineHeight: '10px', marginTop: '20px'}}>
 			               <Progress 
 			               		progress={this.state.progress}
 			               		onProgressChange={this.progressChangeHandler}
