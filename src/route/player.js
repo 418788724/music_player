@@ -38,7 +38,6 @@ class Player extends Component {
 	componentDidMount() {
 		$("#player").bind($.jPlayer.event.timeupdate, (e) => {
 			duration = e.jPlayer.status.duration //歌曲总时间
-			console.log(duration)
 
 			this.setState({
 				progress: e.jPlayer.status.currentPercentAbsolute,
@@ -88,6 +87,10 @@ class Player extends Component {
 		Pubsub.publish('NEXT_MUSIC')
 	}
 
+	changeRepeat() {
+		Pubsub.publish('CHANGE_REPEATE')
+	}
+
 	render() {
 		return (
 			<div className="player-page">
@@ -123,7 +126,7 @@ class Player extends Component {
 	                			<i className="icon next ml20" onClick={this.next.bind(this)}></i>
                 			</div>
                 			<div className="-col-auto">
-                				<i className='icon repeat-once' onClick={this.changeRepeat}></i>
+                				<i className={`icon repeat-${this.props.repeatType}`} onClick={this.changeRepeat.bind(this)}></i>
                 			</div>
                 		</div>
                 	</div>

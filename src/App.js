@@ -15,7 +15,16 @@ import AllMusicList from './route/allMusicList'
 import {
   MUSIC_LIST
 } from './const/musicList.js'
+import {
+  randomRange
+} from './utils/util.js'
 
+
+let repeatTypeList = [
+  'once',
+  'cycle',
+  'random'
+]
 
 class App extends Component {
   constructor() {
@@ -23,7 +32,8 @@ class App extends Component {
 
     this.state = {
       currentMusicItem: MUSIC_LIST[4],
-      musicList: MUSIC_LIST
+      musicList: MUSIC_LIST,
+      repeatType: 'once'
     }
   }
 
@@ -46,7 +56,6 @@ class App extends Component {
       newIndex = (index + 1) % this.state.musicList.length
     } else {
       newIndex = (index + this.state.musicList.length - 1) % this.state.musicList.length
-        //console.log(newIndex)
     }
 
     this.PlayMusic(this.state.musicList[newIndex])
@@ -54,6 +63,26 @@ class App extends Component {
     this.setState({
       currentMusicItem: this.state.musicList[newIndex]
     })
+  }
+
+  changeRepeate() {
+    if (this.state.repeatType === 'once') {
+      this.PlayMusic(this.state.currentMusicItem)
+    } else if (this.state.repeatType === 'cycle') {
+      this.NextMusic()
+    } else if (this.state.repeatType === 'random') {
+      let Index = this.state.musicList.indexOf(this.state.currentMusicItem);
+      let randomIndex = randomRange(0, this.state.musicList.length - 1);
+      while (randomIndex === Index) {
+        randomIndex = randomRange(0, this.state.musicList.length - 1);
+      }
+      console.log(Index + 'and' + randomIndex)
+
+      this.setState({
+        currentMusitItem: this.state.musicList[randomIndex]
+      })
+      this.PlayMusic(this.state.musicList[randomIndex]);
+    }
   }
 
   //Dom挂载完成后插入播放器
@@ -69,7 +98,7 @@ class App extends Component {
 
     //自动播放下一首
     $('#player').bind($.jPlayer.event.ended, (e) => {
-      this.NextMusic()
+      this.changeRepeate()
     })
 
     //删除歌曲
@@ -88,13 +117,23 @@ class App extends Component {
       this.PlayMusic(item)
     })
 
-    //
+    //上一首或下一首
     Pubsub.subscribe('PREV_MUSIC', (msg) => {
       this.NextMusic('prev')
     })
 
     Pubsub.subscribe('NEXT_MUSIC', (msg) => {
       this.NextMusic()
+    })
+
+    //音乐循环播放类型
+    Pubsub.subscribe('CHANGE_REPEATE', () => {
+      let index = repeatTypeList.indexOf(this.state.repeatType)
+      index = (index + 1) % repeatTypeList.length
+
+      this.setState({
+        repeatType: repeatTypeList[index]
+      })
     })
 
   }
@@ -119,6 +158,7 @@ class App extends Component {
                   path="/" 
                   render={()=><Player
                     currentMusicItem={this.state.currentMusicItem}
+                    repeatType={this.state.repeatType}
                   />}
                 ></Route>
                 <Route exact
