@@ -94,7 +94,7 @@ class Player extends Component {
 	render() {
 		return (
 			<div className="player-page">
-                <h1 className="caption"><Link to='/list'>我的私人音乐坊 </Link></h1>
+                <h1 className="caption"><Link to='/list'>我的私人音乐坊 &gt;</Link></h1>
                 <div className="mt20 row">
                 	<div className="controll-wrapper">
                 		<h2 className="music-title">{this.props.currentMusicItem.title}</h2>
